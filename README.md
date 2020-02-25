@@ -10,6 +10,7 @@ AMQPMessage $rabbitMessage
 $config = new \WorkerMonitor\Model\Config();
 $config->setApiUrl('api_url');
 $config->setApiKey('api_key');
+$config->setLogger($logger); // Monolog logger interface - optional
 
 $monitor = new \WorkerMonitor\Monitor($config);
 

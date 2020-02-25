@@ -3,6 +3,8 @@
 namespace WorkerMonitor\Model;
 
 
+use Psr\Log\LoggerInterface;
+
 class Config
 {
     /**
@@ -19,6 +21,11 @@ class Config
      * @var string
      */
     private $apiEnv;
+
+    /**
+     * @var LoggerInterface|null
+     */
+    private $logger;
 
     /**
      * @return string
@@ -66,5 +73,21 @@ class Config
     public function setApiEnv(string $apiEnv)
     {
         $this->apiEnv = $apiEnv;
+    }
+
+    /**
+     * @return LoggerInterface|null
+     */
+    public function getLogger(): ?LoggerInterface
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 }

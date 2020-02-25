@@ -1,16 +1,16 @@
 {
   "name": "darlinkster/worker-monitor",
-  "description": "Prima worker monitor",
+  "description": "Worker Monitor",
   "authors": [
     {
-      "name": "Darlinkster",
-      "email": "gammerport@gmail.com"
+      "name": "Darlinkster"
     }
   ],
   "require": {
-    "php": "^7.0",
+    "php": "^7.1",
     "guzzlehttp/guzzle": "^6.5",
-    "php-amqplib/php-amqplib": "^2.11"
+    "php-amqplib/php-amqplib": "^2.11",
+    "monolog/monolog": "^1.2"
   },
   "autoload": {
     "psr-4": {

@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 use PhpAmqpLib\Message\AMQPMessage;
+use Psr\Log\LoggerInterface;
 use WorkerMonitor\Converter\MessageConverter;
 use WorkerMonitor\Model\Config;
 use WorkerMonitor\Model\Message;
@@ -53,18 +54,33 @@ class Monitor
     public function sendMessageToApi(Message $message): bool
     {
         try {
-            $response = $this->client->post('/'.$this->config->getApiEnv().self::MESSAGE_ENDPOINT, [
-                RequestOptions::HEADERS => [
-                    'x-api-key' => $this->config->getApiKey(),
-                    'Content-type' => 'application/json',
-                    'Accept' => 'application/json',
-                ],
-                RequestOptions::BODY => MessageConverter::convertDataForRequest($message),
+            $headers = [
+                'x-api-key' => $this->config->getApiKey(),
+                'Content-type' => 'application/json',
+                'Accept' => 'application/json',
+            ];
+            $body = MessageConverter::convertDataForRequest($message);
+            $uri = '/'.$this->config->getApiEnv().self::MESSAGE_ENDPOINT;
+
+            $this->log('ApiUrl: {apiUrl} Uri: {uri} Headers: {headers} Body: {body}', ['apiUrl' => $this->config->getApiUrl(),'uri' => $uri, 'headers' => var_export($headers, true), 'body' => $body]);
+
+            $response = $this->client->post($uri, [
+                RequestOptions::HEADERS => $headers,
+                RequestOptions::BODY => $body,
             ]);
         } catch (ClientException $exception) {
             $response = $exception->getResponse();
         }
 
+        $this->log('Code: {code} Message: {message}', ['message' => (string) $response->getBody(), 'code' => $response->getStatusCode()]);
+
         return $response->getStatusCode() === 200;
+    }
+
+    private function log(string $message, array $context = []) {
+        $logger = $this->config->getLogger();
+        if ($logger instanceof LoggerInterface) {
+            $logger->info('[WorkerMonitor] '.$message, $context);
+        }
     }
 }
