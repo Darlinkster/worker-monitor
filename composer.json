@@ -1,6 +1,7 @@
 {
   "name": "darlinkster/worker-monitor",
   "description": "Worker Monitor",
+  "license": "MIT",
   "authors": [
     {
       "name": "Darlinkster"
