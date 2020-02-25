@@ -54,15 +54,23 @@ class Monitor
     public function sendMessageToApi(Message $message): bool
     {
         try {
+            $apiKey = $this->config->getApiKey();
             $headers = [
-                'x-api-key' => $this->config->getApiKey(),
+                'x-api-key' => $apiKey,
                 'Content-type' => 'application/json',
                 'Accept' => 'application/json',
             ];
             $body = MessageConverter::convertDataForRequest($message);
             $uri = '/'.$this->config->getApiEnv().self::MESSAGE_ENDPOINT;
+            $headersExport = $headers;
+            $headersExport['x-api-key'] = substr($apiKey, 0, 3).str_pad('', strlen($apiKey) - 6,'*').substr($apiKey, -3, 3);
 
-            $this->log('ApiUrl: {apiUrl} Uri: {uri} Headers: {headers} Body: {body}', ['apiUrl' => $this->config->getApiUrl(),'uri' => $uri, 'headers' => var_export($headers, true), 'body' => $body]);
+            $this->log('ApiUrl: {apiUrl} Uri: {uri} Headers: {headers} Body: {body}', [
+                'apiUrl' => $this->config->getApiUrl(),
+                'uri' => $uri,
+                'headers' => var_export($headersExport, true),
+                'body' => $body
+            ]);
 
             $response = $this->client->post($uri, [
                 RequestOptions::HEADERS => $headers,
