@@ -78,7 +78,7 @@ class Config
     /**
      * @return LoggerInterface|null
      */
-    public function getLogger(): ?LoggerInterface
+    public function getLogger()
     {
         return $this->logger;
     }
